@@ -2,7 +2,7 @@
 
 `Intro`: This repo consists of the algorithm which are packaged in the specific form.
 `Algorithm`:
-+ clustering:
++ clustering:  
   1.DBSCAN  
   2.KMeans  
   3.Mean Shift  
@@ -12,12 +12,12 @@
 + Graph in 3D
 + Others
 
-PS: The building of this repo is in process and the classification of these algorithms are not the final structure. 
+`PS`: The building of this repo is in process and the classification of these algorithms are not the final structure. 
 
 ## code specification
 ### I. Documentation
 1. Use UTF-8 encoding for files.
-2. No special circumstances, the #-*-coding:utf-8-*- logo must be added to the file header.
+2. No special circumstances, the #-*-coding:utf-8-*- logo must be added to the file header.  
 3.Header comments contain: author, time, file name, version.
 ### Ⅱ. Code format
 1. Indentation: uniform use of 4 spaces for indentation.
@@ -26,33 +26,33 @@ PS: The building of this repo is in process and the classification of these algo
 + a) Do not use a backslash to connect rows.
 + b) Python implicitly joins lines in parentheses, brackets, and curly braces, and you can take advantage of this feature. If necessary, you can add an extra pair of parentheses around the expression.
 + c) Prohibit compound statements, i.e. multiple statements in a line.
-+ d) if/for/while must be a line break.
++ d) if/for/while must be a line break.  
 4.quote：
 + a)Double quotes for natural language, single quotes for machine markings.
 + b) Use string quotation marks consistently in the same file. Use either 'single quotes' or "double quotes" to refer to a string, and use them in the same file. You can use a different type of quotation marks within a string to avoid using the same type of quotation marks.
-5.blank line：
+5.blank line：  
 + a)	two empty lines between module-level functions and class definitions.
 + b)	an empty line between class member functions.
 + c)	functions can use empty lines to separate logically related code.
 ### Ⅲ. Import statement
-1.The import statement should be written in lines.
-2.The import statement should use absolute import.
-3.The import statement should be placed in the header of the file, after module comments and document strings, and before module global variables and constants.
-4.The import statements should be in order, with each group separated by a blank line.
+1.The import statement should be written in lines.  
+2.The import statement should use absolute import.  
+3.The import statement should be placed in the header of the file, after module comments and document strings, and before module global variables and constants.  
+4.The import statements should be in order, with each group separated by a blank line.  
 5.The imports should be grouped in order from most common to least common.
 ### Ⅳ. Space
-1.One empty cell on each side of the binary operator [=,-,+=,==,>,in,is not, and].
-2.In the argument list of the function, followed by a space.
-3.In the argument list of the function, don't add a space between the default value and the equals sign.
-4.After the left parentheses, no extra spaces before the right parentheses.
-5.No extra spaces before the left bracket of the dictionary object.
-6.Don't use extra spaces to align assignment statements.
-7.Don't put spaces before commas, semicolons, and colons, but after them (except at the end of a line).
+1.One empty cell on each side of the binary operator [=,-,+=,==,>,in,is not, and].  
+2.In the argument list of the function, followed by a space.  
+3.In the argument list of the function, don't add a space between the default value and the equals sign.  
+4.After the left parentheses, no extra spaces before the right parentheses.  
+5.No extra spaces before the left bracket of the dictionary object.  
+6.Don't use extra spaces to align assignment statements.  
+7.Don't put spaces before commas, semicolons, and colons, but after them (except at the end of a line).  
 ### Ⅴ. Comment
-1.Block notes: one space after "#" and separate paragraphs with blank lines (also need "#").
-2.Line notes: use at least two spaces and separate statements.
-3. At critical (or complex) parts of the code, comment as much as you can.
-4. Document comments: start and end with """, include: file name, author, time, version.
+1.Block notes: one space after "#" and separate paragraphs with blank lines (also need "#").  
+2.Line notes: use at least two spaces and separate statements.  
+3. At critical (or complex) parts of the code, comment as much as you can.  
+4. Document comments: start and end with """, include: file name, author, time, version.  
 5.Method comments: comment before definition, describing the implementation function, input and output, parameter meaning and exception description.
 ### Ⅵ. Naming
 1. Use the CamelCase naming style, separated by an underscore if there are multiple words.
