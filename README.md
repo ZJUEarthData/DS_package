@@ -3,10 +3,10 @@
 `Intro`: This repo consists of the algorithm which are packaged in the specific form.
 `Algorithm`:
 + clustering:
-  1.DBSCAN
-  2.KMeans
-  3.Mean Shift
-  4.Affinity Propagation
+  1.DBSCAN  
+  2.KMeans  
+  3.Mean Shift  
+  4.Affinity Propagation  
 + Classifer:
   1.SVM
 + Graph in 3D
