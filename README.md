@@ -17,12 +17,12 @@
 ## code specification
 ### I. Documentation
 1. Use UTF-8 encoding for files.
-2. No special circumstances, the #-*-coding:utf-8-*- logo must be added to the file header.  
+2. No special circumstances, the #-*-coding:utf-8-*- logo must be added to the file header.   
 3.Header comments contain: author, time, file name, version.
 ### Ⅱ. Code format
 1. Indentation: uniform use of 4 spaces for indentation.
-2. Line width: a single line should not exceed 80 characters (in special circumstances, it may slightly exceed 80, but the maximum should not exceed 120).
-3.line connections：
+2. Line width: a single line should not exceed 80 characters (in special circumstances, it may slightly exceed 80, but the maximum should not exceed 120).  
+3.line connection:
 + a) Do not use a backslash to connect rows.
 + b) Python implicitly joins lines in parentheses, brackets, and curly braces, and you can take advantage of this feature. If necessary, you can add an extra pair of parentheses around the expression.
 + c) Prohibit compound statements, i.e. multiple statements in a line.
