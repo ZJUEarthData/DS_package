@@ -1,22 +1,17 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Aug 27 11:01:26 2020
-
-@author: Administrator
-"""
 #!/usr/bin/env python
 # coding: utf-8
 
 import pandas as pd
-from sklearn.model_selection import GridSearchCV,ParameterGrid
+from sklearn.model_selection import ParameterGrid
 from sklearn.base import clone
 from sklearn.cluster import KMeans
 from sklearn import metrics
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import learning_curve
-import joblib
-import datetime
+
+df = pd.read_excel('4.xlsx')
+data = df.drop('O7', axis = 1)
+labels = df['O7']
 
 # 核心功能，非监督学习的网格搜索，请在这个基础上添加需要的功能，最后修改函数名以防冲突
 def KmeansGridsearch(dmodel, data, param_dict):
@@ -43,9 +38,14 @@ def KmeansGridsearch(dmodel, data, param_dict):
     return (output_models)
 
 
+kmeans = KMeans()
+# 选择要测试的参数
+kmeans_dict = {'n_clusters':[3,4,5],
+               'init':['k-means++','random']}
+output = KmeansGridsearch(kmeans,data,kmeans_dict)
 
 # 评价标准，测试用
-def get_marks(estimator, data, labels, name=None):
+def get_marks(estimator, data, name=None):
     """获取评分，有五种需要知道数据集的实际分类信息，有三种不需要，参考readme.txt
     
     :param estimator: 模型
@@ -63,10 +63,12 @@ def get_marks(estimator, data, labels, name=None):
     print("Calinski Harabasz Score:  (方差比指数) ", metrics.calinski_harabasz_score(data, estimator.labels_))
     print("Silhouette Score          (轮廓分数): ", metrics.silhouette_score(data, estimator.labels_))
 
+# 测试结果
+for i in range(len(output)):
+    get_marks(output[i], data=data, name="output"+ str(i))
 
 # 将测试结果绘制成图像，便于比较
-def plotit(estimator, data, labels):
-    
+def plotit(estimator, data):
     plt.subplot(3,3,1)
     plt.subplots_adjust(0,0,2,2)
     home = []
@@ -118,72 +120,9 @@ def plotit(estimator, data, labels):
     plt.plot(home)
     plt.title('Silhouette Score')
 
+plotit(output,data)
 
-def read_para():
-    para = pd.read_excel('para.xlsx', header=None, dtype='object')
-    dic = para.set_index(0).T.to_dict('list')
-    for i in dic:
-        dic[i] = [x for x in dic[i] if x == x]
-    return dic
 
-def plot_learning_curve(model,data,labels):
-    train_sizes, train_scores, test_scores = learning_curve(model, data, labels,
-                                                            scoring='adjusted_rand_score', cv=5)
-    train_scores_mean = np.mean(train_scores, axis=1)  # 将训练得分集合按行的到平均值
-    train_scores_std = np.std(train_scores, axis=1)  # 计算训练矩阵的标准方差
-    test_scores_mean = np.mean(test_scores, axis=1)
-    test_scores_std = np.std(test_scores, axis=1)
-    plt.grid()  # 背景设置为网格线
-
-    plt.fill_between(train_sizes, train_scores_mean - train_scores_std, train_scores_mean + train_scores_std, alpha=0.1,
-                     color='r')
-    # plt.fill_between()函数会把模型准确性的平均值的上下方差的空间里用颜色填充。
-    plt.fill_between(train_sizes, test_scores_mean - test_scores_std, test_scores_mean + test_scores_std, alpha=0.1,
-                     color='g')
-    plt.plot(train_sizes, train_scores_mean, 'o-', color='r', label='Training score')
-    # 然后用plt.plot()函数画出模型准确性的平均值
-    plt.plot(train_sizes, test_scores_mean, 'o-', color='g', label='Cross_validation score')
-    plt.legend(loc='best')  # 显示图例
-    plt.show()
-    
-def main():
-    
-    df = pd.read_excel('test4.xlsx')
-    data = df.drop('TRUE VALUE', axis=1)
-    labels = df['TRUE VALUE']
-    kmeans = KMeans()
-    
-    # 选择要测试的参数
-    kmeans_dict = read_para()
-    output = KmeansGridsearch(kmeans,data,kmeans_dict)
-
-    # 绘制表现分数
-    for i in range(len(output)):
-        get_marks(output[i], data=data,labels=labels, name="output" + str(i))
-        
-    plotit(output, data, labels)
-    
-    # 测试结果
-    for i in range(len(output)):
-        get_marks(output[i], data=data, labels=labels, name="output" + str(i))
-    af_best_model = GridSearchCV(kmeans, kmeans_dict, cv=5, scoring='adjusted_rand_score', verbose=1, n_jobs=-1)
-    af_result = af_best_model.fit(data, labels)
-    print(af_result.best_params_)
-    
-    # 保存模型
-    joblib.dump(af_best_model.best_estimator_, "./test.pkl")
-
-    # 保存参数
-    TIMESTAMP = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S").replace("'", "")
-    result = pd.DataFrame(af_result.best_params_, index=['value'])
-    result.to_csv("{}.csv".format(TIMESTAMP), index=None)
-
-    # 绘制学习曲线
-    plt.subplot(3,3,8)
-    plot_learning_curve(af_best_model.best_estimator_,data,labels)
-
-if __name__ == '__main__':
-    main()
 
 
 
