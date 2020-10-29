@@ -10,6 +10,9 @@
 + Classifer:
   1.SVM
 + Graph in 3D
++ Calculator for end member
+  1.pyroxene
+  2.garnet
 + Others
 
 `PS`: The building of this repo is in process and the classification of these algorithms are not the final structure. 
@@ -73,6 +76,9 @@
 + 分类器：
     1. SVM
 + 3D图形输出
++ 端元计算器
+    1. 辉石
+    2. 石榴子石
 + 其他
 
 
