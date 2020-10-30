@@ -15,8 +15,7 @@ except Exception:
     print("--------------------------------- \n")
 
 def find_num(formula):
-    """
-    find the number of cation and oxygen atom in the formula
+    """find the number of cation and oxygen atom in the formula
 
     :param formula: the molecular formula
     :return: the number of cation and oxygen atom
@@ -46,8 +45,7 @@ def find_num(formula):
     return ion_num, oxy_num
 
 def find_ion(formula):
-    """
-    find the cation of the formula
+    """find the cation of the formula
 
     :param formula: the molecular formula
     :return: ion
@@ -63,8 +61,7 @@ def find_ion(formula):
     return ion
 
 def rel_mole_weight(ion, ion_num, oxy_num):
-    """
-    calculate the relative molecular mass of the formula
+    """calculate the relative molecular mass of the formula
 
     :param ion: cation
     :param ion_num: the number of the cation
@@ -85,6 +82,13 @@ def rel_mole_weight(ion, ion_num, oxy_num):
     return relative_molecular_weight
 
 def normalization_factor_calculation(rmw, oxy_num, data_input):
+    """calculate the normalization factor
+
+    :param rmw: relative molecular mass
+    :param oxy_num: the number of the oxygen atom
+    :param data_input: dataset
+    :return: the value of normalization factor in every raw
+    """
     normalization_factor = []
     data_num = data_input.shape[0]
     for i in range(data_num):
@@ -94,6 +98,15 @@ def normalization_factor_calculation(rmw, oxy_num, data_input):
     return normalization_factor
 
 def cation_formula_calculation(normalization_factor, rmw, ion_num, data, ion):
+    """calculate the value of the formula of cations
+
+    :param normalization_factor: normalization factor
+    :param rmw: relative molecular weight
+    :param ion_num: the number of cation
+    :param data: dataset
+    :param ion: the name of cation
+    :return: the value of the formula of cations
+    """
     data_num = data.shape[0]
     cation = []
     for j in range(data_num):
@@ -105,11 +118,22 @@ def cation_formula_calculation(normalization_factor, rmw, ion_num, data, ion):
     return cation_df
 
 def total_cation_fomular_calculation(cation_formula):
+    """sum the value of the formula of cations
+
+    :param cation_formula: the value of the formula of cations
+    :return: summation of the value of the formula of cations
+    """
     data_num = cation_formula.shape[0]
     total_cation_fomular = np.array([np.array(cation_formula.iloc[i, :]).sum() for i in range(data_num)]).reshape(-1, 1)
     return total_cation_fomular
 
 def corrected_cation_calculation(df_exc_fe, df_inc_fe):
+    """calculate the corrected value of the formula of cations
+
+    :param df_exc_fe: dataset excluding the column of Fe
+    :param df_inc_fe: dataset including the column of Fe
+    :return: the corrected value of the formula of cations
+    """
     corrected_df = df_exc_fe.iloc[:, :-1].copy()
     for i in range(df_exc_fe.shape[0]):
         corrected_df.iloc[i, :] = np.array(df_exc_fe.iloc[i, :-1]) * 8 / df_exc_fe["total_cation_formula"][i]
@@ -125,6 +149,12 @@ def corrected_cation_calculation(df_exc_fe, df_inc_fe):
     return corrected_df
 
 def corrected_oxides_calculation(corrected_cation, df_input):
+    """calculate the corrected value of the relative weight mass
+
+    :param corrected_cation: the corrected value of the formula of cations
+    :param df_input: dataset
+    :return: the corrected value of the relative weight mass
+    """
     corrected_oxides = df_input.drop("FeO", axis=1)
     feo = []
     fe2o3 = []
@@ -138,6 +168,12 @@ def corrected_oxides_calculation(corrected_cation, df_input):
     return corrected_oxides
 
 def mole_fraction_calculation(corrected_cation, target):
+    """calculate the mole fraction
+
+    :param corrected_cation: the corrected value of the formula of cations
+    :param target: the mole fraction of specific elements
+    :return: the mole fraction
+    """
     target_df = corrected_cation[target]
     mole_fraction = []
     data_num = corrected_cation.shape[0]
@@ -151,33 +187,40 @@ def mole_fraction_calculation(corrected_cation, target):
             single_molecular_fraction = np.array(single_target_data[target[j]]) / sum
             temp_molecular_fraction.append(single_molecular_fraction)
         mole_fraction.append(temp_molecular_fraction)
-    molecular_fraction_df = pd.DataFrame(mole_fraction)
+    mole_fraction_df = pd.DataFrame(mole_fraction)
     columns_name = ['X' + target[l] for l in range(len(target))]
-    molecular_fraction_df.columns = columns_name
-    return molecular_fraction_df
+    mole_fraction_df.columns = columns_name
+    return mole_fraction_df
 
-def end_members_calculation(molecular_fraction_VIII, molecular_fraction_VI, target):
-    data_num = molecular_fraction_VIII.shape[0]
+def end_members_calculation(mole_fraction_VIII, mole_fraction_VI, target):
+    """calculate the end member
+
+    :param mole_fraction_VIII: the mole fraction of VIII
+    :param mole_fraction_VI: the mole fraction of VI
+    :param target: the name of the end members
+    :return: the value of the end member
+    """
+    data_num = mole_fraction_VIII.shape[0]
     end_members = []
     columns_name = []
     for i in range(len(target)):
         if target[i].lower() == 'almandine':
-            end_members.append(np.array(molecular_fraction_VIII['XFe2+']) * 100)
+            end_members.append(np.array(mole_fraction_VIII['XFe2+']) * 100)
             columns_name.append(target[i])
         elif target[i].lower() == 'spessartine':
-            end_members.append(np.array(molecular_fraction_VIII['XMn']) * 100)
+            end_members.append(np.array(mole_fraction_VIII['XMn']) * 100)
             columns_name.append(target[i])
         elif target[i].lower() == 'pyrope':
-            end_members.append(np.array(molecular_fraction_VIII['XMg']) * 100)
+            end_members.append(np.array(mole_fraction_VIII['XMg']) * 100)
             columns_name.append(target[i])
         elif target[i].lower() == 'grossular':
-            end_members.append(np.array(molecular_fraction_VIII['XCa']) * np.array(molecular_fraction_VI['XAl']) * 100)
+            end_members.append(np.array(mole_fraction_VIII['XCa']) * np.array(mole_fraction_VI['XAl']) * 100)
             columns_name.append(target[i])
         elif target[i].lower() == 'andradite':
-            end_members.append(np.array(molecular_fraction_VIII['XCa']) * np.array((molecular_fraction_VI['XFe3+'])) * 100)
+            end_members.append(np.array(mole_fraction_VIII['XCa']) * np.array((mole_fraction_VI['XFe3+'])) * 100)
             columns_name.append(target[i])
         elif target[i].lower() == 'uvarovite':
-            end_members.append(np.array(molecular_fraction_VIII['XCa']) * np.array(molecular_fraction_VI['XCr']) * 100)
+            end_members.append(np.array(mole_fraction_VIII['XCa']) * np.array(mole_fraction_VI['XCr']) * 100)
             columns_name.append(target[i])
         else:
             print("Please check whether the name '{}' is appropriate?".format(target[i]))
@@ -186,6 +229,12 @@ def end_members_calculation(molecular_fraction_VIII, molecular_fraction_VI, targ
     return end_members_df
 
 def result2sheet(df, df_name):
+    """make a sheet to store the result
+
+    :param df: dataset
+    :param df_name: the name of the sheet
+    :return: a sheet for storing
+    """
     try:
         df.to_excel("{}.xlsx".format(df_name))
         print("Successfully store the results of {} in '{}.xlsx' \n".format(df_name, df_name))
@@ -232,13 +281,13 @@ def main():
     corrected_oxides = corrected_oxides_calculation(corrected_cation, data)
     result2sheet(corrected_oxides, "corrected_oxides")
 
-    # calculate the molecular fraction
+    # calculate the mole fraction
     XVIII = ['Fe2+', 'Mn', 'Mg', 'Ca']
     XVI = ['Al', 'Fe3+', 'Cr']
     mole_fraction_VIII = mole_fraction_calculation(corrected_cation, XVIII)
     mole_fraction_VI = mole_fraction_calculation(corrected_cation, XVI)
     mole_fraction = pd.concat([mole_fraction_VIII, mole_fraction_VI], axis=1)
-    result2sheet(mole_fraction, "molecular_fraction")
+    result2sheet(mole_fraction, "mole_fraction")
 
     # calculate the end members of garnet and format it
     end_members_name = ['Almandine', 'Spessartine', 'Pyrope', 'Grossular', 'Andradite', 'Uvarovite']
