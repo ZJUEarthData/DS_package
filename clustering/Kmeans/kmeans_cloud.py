@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Aug 27 11:01:26 2020
+Created on Fri Aug 28 10:53:34 2020
 
 @author: 王少泽
 """
@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import learning_curve
 import joblib
 import datetime
+import sys
 
 # 核心功能，非监督学习的网格搜索，请在这个基础上添加需要的功能，最后修改函数名以防冲突
 def KmeansGridsearch(dmodel, data, param_dict):
@@ -31,8 +32,8 @@ def KmeansGridsearch(dmodel, data, param_dict):
     # 构建超参数网格
     param_grid = ParameterGrid(param_dict)
     
-    # change the parameter attributes in kmeans according to the param_grid
-    # 依据网格超参数修改 kmeans object 的对应参数，训练模型，得出输出数据
+    # change the parameter attributes in dbscan according to the param_grid
+    # 依据网格超参数修改dbscan object 的对应参数，训练模型，得出输出数据
     for param in param_grid:
         for key, value in param.items():
             setattr(dmodel,key,value)
@@ -117,17 +118,16 @@ def plotit(estimator, data, labels):
         plt.axvline(x=i,linestyle='--',linewidth=1,color='red')
     plt.plot(home)
     plt.title('Silhouette Score')
-    plt.show()
 
 
-def read_para():
+def read_para(FEATURE_FILE_PATH):
     para = pd.read_excel('para.xlsx', header=None, dtype='object')
     dic = para.set_index(0).T.to_dict('list')
     for i in dic:
         dic[i] = [x for x in dic[i] if x == x]
     return dic
 
-def plot_learning_curve(model,data,labels):
+def plot_learning_curve(model,data,labels,OUTPUT_RESULTS):
     train_sizes, train_scores, test_scores = learning_curve(model, data, labels,
                                                             scoring='adjusted_rand_score', cv=5)
     train_scores_mean = np.mean(train_scores, axis=1)  # 将训练得分集合按行的到平均值
@@ -145,38 +145,48 @@ def plot_learning_curve(model,data,labels):
     # 然后用plt.plot()函数画出模型准确性的平均值
     plt.plot(train_sizes, test_scores_mean, 'o-', color='g', label='Cross_validation score')
     plt.legend(loc='best')  # 显示图例
-    plt.show()
+    #plt.show()
+    plt.savefig(OUTPUT_RESULTS + 'training_results.png')
     
 def main():
     
-    df = pd.read_excel('test4.xlsx')
+    FEATURE_FILE_PATH = sys.argv[1]
+    DATA_FILE_PATH = sys.argv[2]
+    OUTPUT_MODEL = sys.argv[3]
+    OUTPUT_RESULTS = sys.argv[4]
+    
+    df = pd.read_excel( DATA_FILE_PATH)
     data = df.drop('TRUE VALUE', axis=1)
     labels = df['TRUE VALUE']
     kmeans = KMeans()
     
     # 选择要测试的参数
-    kmeans_dict = read_para()
-    output = KmeansGridsearch(kmeans,data,kmeans_dict)
+    ap_dict = read_para(FEATURE_FILE_PATH)
+    output = KmeansGridsearch(kmeans,data,ap_dict)
+
+    # 测试结果
+    #for i in range(len(output)):
+    #    get_marks(output[i], data=data,labels=labels, name="output" + str(i))
         
+    #plotit(output, data, labels)
     
-    # 测试结果并绘制表现分数
+    # 测试结果
     for i in range(len(output)):
         get_marks(output[i], data=data, labels=labels, name="output" + str(i))
-    af_best_model = GridSearchCV(kmeans, kmeans_dict, cv=5, scoring='adjusted_rand_score', verbose=1, n_jobs=-1)
+    af_best_model = GridSearchCV(kmeans, ap_dict, cv=5, scoring='adjusted_rand_score', verbose=1, n_jobs=-1)
     af_result = af_best_model.fit(data, labels)
     print("The best parameters are: ",af_result.best_params_)
-    plotit(output, data, labels)
     
-    # 保存模型
-    joblib.dump(af_best_model.best_estimator_, "./test.pkl")
+        # 保存模型
+    joblib.dump(af_best_model.best_estimator_, OUTPUT_MODEL+ "./test.pkl")
 
     # 保存参数
     TIMESTAMP = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S").replace("'", "")
     result = pd.DataFrame(af_result.best_params_, index=['value'])
-    result.to_csv("{}.csv".format(TIMESTAMP), index=None)
+    result.to_csv(OUTPUT_RESULTS+"{}.csv".format(TIMESTAMP), index=None)
 
     # 绘制学习曲线
-    plot_learning_curve(af_best_model.best_estimator_,data,labels)
+    plot_learning_curve(af_best_model.best_estimator_,data,labels,OUTPUT_RESULTS)
 
 if __name__ == '__main__':
     main()
