@@ -1,6 +1,7 @@
-# Old Algorithm
+# ML_package
 
-`Intro`: This repo consists of the algorithm which are packaged in the specific form.
+`Intro`: This repo consists of the algorithm which are packaged in the specific form. 
+
 `Algorithm`:
 + clustering:  
   1.DBSCAN  
