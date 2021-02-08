@@ -7,6 +7,7 @@ The concrete idea of the code is as follows: input paths, input data and paramet
 
 
 2.Function Declaration
+
 （1）SVMGridsearch
 Constructing models with different parameter combinations
 dmodel: 		The default model
@@ -38,6 +39,7 @@ classifier: 	                model
 data_list:		data set
 label_list:		labels
 file_name:	output path
+
 3. Parameter Specification
 FEATURE_FILE_PATH: 	The path of hyper-parameter table
 DATA_FILE_PATH:		The path of data

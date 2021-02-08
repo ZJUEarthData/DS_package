@@ -239,6 +239,8 @@ def result2sheet(df, df_name):
         df.to_excel("{}.xlsx".format(df_name))
         print("Successfully store the results of {} in '{}.xlsx' \n".format(df_name, df_name))
     except ModuleNotFoundError:
+        print("** Please download openpyxl by pip3 **")
+        print("** The data will be stored in .csv file **")
         df.to_csv("{}.csv".format(df_name))
         print("Successfully store the results of {} in '{}.csv' \n".format(df_name, df_name))
 
