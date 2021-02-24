@@ -4,17 +4,21 @@
 
 `Algorithm`:
 + clustering:  
-  1.DBSCAN  
-  2.KMeans  
-  3.Mean Shift  
-  4.Affinity Propagation  
-+ Classifer:
-  1.SVM
+  - DBSCAN  
+  - KMeans  
+  - Mean Shift  
+  - Affinity Propagation  
++ Classifer: 
+  - SVM
 + Graph in 3D
-+ Calculator for end member
-  1.pyroxene
-  2.garnet
++ Multilayer perceptron(Deep Neural Network) 
++ Calculator for end member 
+  - pyroxene
+  - garnet
 + Others
+  - Elements in Curve
+  - HuckDiagram
++ Statistics
 
 `PS`: The building of this repo is in process and the classification of these algorithms are not the final structure. 
 
