@@ -19,6 +19,7 @@
   - Elements in Curve
   - HuckDiagram
 + Statistics
++ Moving Average
 
 `PS`: The building of this repo is in process and the classification of these algorithms are not the final structure. 
 
