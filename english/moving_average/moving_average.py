@@ -19,7 +19,7 @@ def single_x_vs_y(x_data, y_data, step_size):
     :param x_data: data as X axis
     :param y_data: data as Y axis
     :param step_size: how wide every interval has
-    :return moving_mean, moving_std:
+    :return moving_mean, moving_std, x_mid:
     """
     x_min, x_max = x_data.min(), x_data.max()
     # calculate how many segments a specific column whose range (x_max - x_min) divided by step_size has 
@@ -29,11 +29,16 @@ def single_x_vs_y(x_data, y_data, step_size):
     
     moving_mean = []
     moving_std = []
+    x_mid = []
     accum_x = x_min
     for i in range(int(segments)):
         left_x = accum_x
         accum_x = accum_x + step_size
-        right_x = accum_x  
+        if accum_x <= x_max:
+            right_x = accum_x
+        else:
+            right_x = x_max
+        x_mid.append(1 / 2 * (left_x + right_x))  
         # check whether the data point of x is in the segments range 
         x_in_range = x_data.apply(lambda t: left_x <= t <= right_x)
         # find the corresponding data point in y
@@ -56,7 +61,7 @@ def single_x_vs_y(x_data, y_data, step_size):
         else:
             moving_std.append(y_in_range_std)
     
-    return moving_mean, moving_std
+    return moving_mean, moving_std, x_mid
 
 def moving_average(step_size, data_name):
     """calculate moving mean and moving standard deviation value
@@ -76,12 +81,12 @@ def moving_average(step_size, data_name):
         for single_y in y_column:
             print("X selected:", single_x)
             print("Y selected:", single_y)
-            moving_mean, moving_std = single_x_vs_y(x[single_x], y[single_y], step_size)
+            moving_mean, moving_std, x_mid = single_x_vs_y(x[single_x], y[single_y], step_size)
             
             # store the results in a dictionary
             pair = str(single_x) + '-' + str(single_y)
-            key1, key2 = "moving mean", "moving std"
-            data = dict([[key1, moving_mean], [key2, moving_std]])
+            key1, key2, key3 = "moving_mean", "moving_std", "x_mid"
+            data = dict([[key1, moving_mean], [key2, moving_std], [key3, x_mid]])
             if pair in store:
                 store[pair].append(data)
             else:    
@@ -95,5 +100,5 @@ def moving_average(step_size, data_name):
             print("  ")
         pd.DataFrame(store).to_excel(os.path.join(RESULT_PATH, "{}.xlsx".format(single_x)))
 
-if __name__ == "main":
-    moving_avergate(1, "MAJOR3P.xlsx")
+if __name__ == "__main__":
+    moving_average(1, "MAJOR3P.xlsx")
